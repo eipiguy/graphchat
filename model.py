@@ -23,11 +23,28 @@ class Participant(User):
 		pass
 
 class Message:
-	def __init__(self, timestamp, user, text, context=[]):
+	def __init__(self, timestamp, text, user='', reactions={}, parent=None):
 		self.timestamp = timestamp
-		self.author = user
 		self.text = text
-		self.context = context
+		self.author = user
+		self.reactions = reactions
+		self.reaction_count = self.count_reactions()
+		self.heirarchy_lvl = 0
+		if parent:
+			self.parent = parent
+			self.heirarchy_lvl = parent.heirarchy_lvl + 1
+
+	def add_reaction(self, timestamp, msg, msg_widget):
+		self.reactions[timestamp] = Message(
+			timestamp, msg, user='', reactions={}, parent=self)
+		self.reaction_count += 1
+		msg_widget.reactions_tally.setText(str(self.reaction_count))
+
+	def count_reactions(self):
+		num_reactions = len(self.reactions)
+		for reaction in self.reactions.values():
+			num_reactions += reaction.count_reactions()
+		return num_reactions
 
 class Topic:
 	def __init__(self, timestamp, user, text, context=[]):

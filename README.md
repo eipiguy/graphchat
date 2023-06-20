@@ -28,6 +28,24 @@ So. Planning is about resource management. What desires to we have, and how do w
 
 ## Goals
 
+Things that can be realistically accomplished.
+
+### High Level
+
+What needs are there? What am I trying to accomplish?
+
+- Chain of Thought path UI: creation, navigation, and analysis
+- Messages as directed graphs, not trees. Distill
+  - what's the difference? merging of messages
+  - not just multiple replies to a single message
+  - messages that are "responses" to multiple messages as "influences"
+  - how to force and encourage systematically?
+- How to keep a conversation on topic.
+  - What are the current topics?
+  - How do they tie together?
+
+### Practical
+
 - indented replies
 - right aligned indented list with "topics" *below* the "bullet points" rather than above
 - folding

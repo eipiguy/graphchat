@@ -2,26 +2,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTextEdit, QLineEdit, QScrollArea, QComboBox, QLabel
 from time import time
 
-class Message:
-	def __init__(self, timestamp, text, user='', reactions={}, parent=None):
-		self.timestamp = timestamp
-		self.text = text
-		self.author = user
-		self.reactions = reactions
-		self.reaction_count = self.count_reactions()
-		self.heirarchy_lvl = 0
-		if parent:
-			self.parent = parent
-			self.heirarchy_lvl = parent.heirarchy_lvl + 1
-	def add_reaction(self, timestamp, msg, msg_widget):
-		self.reactions[timestamp] = Message(timestamp, msg, user='', reactions={}, parent=self)
-		self.reaction_count += 1
-		msg_widget.reactions_tally.setText(str(self.reaction_count))
-	def count_reactions(self):
-		num_reactions = len(self.reactions)
-		for reaction in self.reactions.values():
-			num_reactions += reaction.count_reactions()
-		return num_reactions
+from model import Message
 
 class ChatWindow(QWidget):
 	def __init__(self):
@@ -50,10 +31,10 @@ class ChatWindow(QWidget):
 		self.user_selection.addItem('new')
 
 		self.msg_input = QLineEdit()
-		self.msg_input.returnPressed.connect(self.send_clicked)
+		self.msg_input.returnPressed.connect(self.send)
 
 		self.send_button = QPushButton('Send')
-		self.send_button.clicked.connect(self.send_clicked)
+		self.send_button.clicked.connect(self.send)
 
 		# Set up the line layout of input ui elements
 		self.input_layout = QHBoxLayout()
@@ -66,7 +47,7 @@ class ChatWindow(QWidget):
 
 		self.setLayout(self.layout)
 
-	def send_clicked(self):
+	def send(self):
 		msg = self.msg_input.text()
 		if msg:
 			timestamp = time()
@@ -79,6 +60,9 @@ class ChatWindow(QWidget):
 		message = Message(timestamp, sender, msg)
 		self.messages[timestamp] = message
 
+		# the message widget is where the author and message text are displayed in the log
+		# it is a collection of Qt components to display the message details
+		# also has buttons to add standard replies
 		msg_widget = QWidget()
 		msg_layout = QHBoxLayout(msg_widget)
 
